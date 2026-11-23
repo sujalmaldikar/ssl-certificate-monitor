@@ -1,0 +1,22 @@
+# Environment variables and secrets
+.env
+.env.*
+
+# Private keys and certificates
+*.key
+*.pem
+
+# Python virtual environment and cache
+venv/
+__pycache__/
+*.pyc
+
+# Logs and runtime data
+logs/
+alert_history.json
+reports/
+certbot-data/
+
+# OS files
+.DS_Store
+test-certs/
