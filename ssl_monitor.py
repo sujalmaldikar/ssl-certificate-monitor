@@ -225,8 +225,9 @@ def save_alert_history(history):
 # EMAIL ALERT MANAGEMENT
 # ==========================================
 
+
 def process_alert(result, alert_history):
-    """Send email only when a new alert is detected."""
+    """Send one alert per certificate per day until renewal or expiry."""
 
     severity = (
         "CRITICAL"
@@ -234,23 +235,25 @@ def process_alert(result, alert_history):
         else "WARNING"
     )
 
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
     alert_key = (
         f"{result['certificate']}|"
         f"{result['expiry']}|"
-        f"{result['status']}"
+        f"{today}"
     )
 
     if alert_key in alert_history:
 
         logger.info(
-            "Duplicate alert skipped: %s",
+            "Daily duplicate alert skipped: %s",
             result["certificate"]
         )
 
         return "Duplicate skipped"
 
     logger.warning(
-        "New alert detected: %s | Severity: %s",
+        "Certificate alert detected: %s | Severity: %s",
         result["certificate"],
         severity
     )
@@ -279,7 +282,7 @@ def process_alert(result, alert_history):
         save_alert_history(alert_history)
 
         logger.info(
-            "Email notification successful: %s",
+            "Daily email notification successful: %s",
             result["certificate"]
         )
 
@@ -291,6 +294,7 @@ def process_alert(result, alert_history):
     )
 
     return "Email failed - retry next run"
+
 
 
 # ==========================================
